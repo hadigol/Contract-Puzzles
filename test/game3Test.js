@@ -9,25 +9,35 @@ describe('Game3', function () {
     // Hardhat will create 10 accounts for you by default
     // you can get one of this accounts with ethers.provider.getSigner
     // and passing in the zero-based indexed of the signer you want:
-    const signer = ethers.provider.getSigner(0);
 
-    // you can get that signer's address via .getAddress()
-    // this variable is NOT used for Contract 3, just here as an example
-    const address = await signer.getAddress();
+    const signers = [];
+    const addresses = [];
+    let owner;
 
-    return { game, signer };
+    const accounts = await ethers.getSigners();
+
+    /*
+    for (let i = 0; i<=2; i++){
+      signers[i] = ethers.provider.getSigner(i);
+      addresses[i] = await signers[i].getAddress();
+    } */
+
+    return { game, accounts };
   }
 
   it('should be a winner', async function () {
-    const { game, signer } = await loadFixture(deployContractAndSetVariables);
+    const { game, accounts } = await loadFixture(deployContractAndSetVariables);
 
     // you'll need to update the `balances` mapping to win this stage
-
     // to call a contract as a signer you can use contract.connect
-    await game.connect(signer).buy({ value: '1' });
+    
+      await game.connect(accounts[0]).buy({ value: '2' });
+      await game.connect(accounts[1]).buy({ value: '3' });
+      await game.connect(accounts[2]).buy({ value: '1' });
+    
 
     // TODO: win expects three arguments
-    await game.win();
+    await game.win(await accounts[0].getAddress(),await accounts[1].getAddress(),await accounts[2].getAddress());
 
     // leave this assertion as-is
     assert(await game.isWon(), 'You did not win the game');

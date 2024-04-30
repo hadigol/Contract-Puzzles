@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
+import "hardhat/console.sol";
+
 
 contract Game1 {
   bool public isWon;
